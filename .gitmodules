@@ -1,0 +1,6 @@
+[submodule "risotto"]
+	path = risotto
+	url = git@github.com:joeroe/risotto.git
+[submodule "themes/risotto"]
+	path = themes/risotto
+	url = git@github.com:joeroe/risotto.git
