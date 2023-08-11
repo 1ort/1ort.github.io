@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>ort</title>
+    <link>https://ort.soy/</link>
+    <description>Recent content on ort</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <lastBuildDate>Sat, 12 Aug 2023 04:00:14 +0500</lastBuildDate><atom:link href="https://ort.soy/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Helol?</title>
+      <link>https://ort.soy/posts/first/</link>
+      <pubDate>Sat, 12 Aug 2023 03:57:29 +0500</pubDate>
+      
+      <guid>https://ort.soy/posts/first/</guid>
+      <description>There will be something here soon </description>
+    </item>
+    
+  </channel>
+</rss>
