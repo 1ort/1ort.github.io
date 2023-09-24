@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-    <head><title>Posts &ndash; ort</title>
+    <head><title>Why you should use property factories in Python &ndash; ort</title>
 <meta name="description" content="Some thoughts may visit this place">
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -38,17 +38,83 @@
 </header>
 
             <section class="page__body">
-    <h1 id="posts">Posts</h1>
-
+    <header class="content__header">
+        <h1>Why you should use property factories in Python</h1>
+    </header>
     
+    <div class="content__body">
+        <p>If you often use the @property decorator in your classes, do you find yourself repeating the same logic over and over again?</p>
+<h3 id="if-this-problem-is-familiar-to-you-use-factories">If this problem is familiar to you, use factories</h3>
+<pre tabindex="0"><code>from functools import cache  
+  
+def frozen(value):  
+    def gty_get(instance):  
+        return value  
+  
+    return property(gty_get)  
+  
+  
+def default_from(factory):  
+  
+    def qty_get(instance):  
+        return factory()  
+  
+    return property(cache(qty_get))  
+  
+  
+def constraint(name, key_func):  
+    def qty_get(instance):  
+        return instance.__dict__[name]  
+  
+    def qty_set(instance, value):  
+        if key_func(value):  
+            instance.__dict__[name] = value  
+        else:  
+            raise ValueError(&#39;Value does not meet constraint&#39;)  
+  
+    return property(qty_get, qty_set)
+</code></pre><pre tabindex="0"><code>class Foo:  
+    a = frozen(5)  
+    b = default_from(list)  
+    c = constraint(&#39;c&#39;, lambda x: x % 2 == 0)
+</code></pre><pre tabindex="0"><code>Doctest  
+  
+&gt;&gt;&gt; foo = Foo()  
+&gt;&gt;&gt; foo.a
+5
 
-    <ul>
-    
-        <li><a href="https://ort.soy/posts/properties/">Why you should use property factories in Python</a></li>
+&gt;&gt;&gt; foo.a = 10
+Traceback (most recent call last):  
+    ...
+AttributeError: property &#39;a&#39; of &#39;Foo&#39; object has no setter  
+  
+&gt;&gt;&gt; bar = Foo()  
+&gt;&gt;&gt; bar.b, foo.b  
+([], [])
 
-    
-    </ul>
+&gt;&gt;&gt; bar.b is foo.b  
+False
 
+&gt;&gt;&gt; foo.b.append(True)  
+&gt;&gt;&gt; foo.b  
+[True]
+
+&gt;&gt;&gt; foo.c  
+Traceback (most recent call last):  
+    ...
+KeyError: &#39;c&#39;
+
+&gt;&gt;&gt; foo.c = 6  
+&gt;&gt;&gt; foo.c  
+6
+
+&gt;&gt;&gt; foo.c = 7  
+Traceback (most recent call last):  
+    ...
+ValueError: Value does not meet constraint
+</code></pre>
+    </div>
+    <footer class="content__footer"></footer>
 
             </section>
 
@@ -79,6 +145,16 @@
 </div>
                 <hr>
                 <div class="aside__content">
+    
+    
+        <p>
+            
+            2023-09-25
+        </p>
+    
+
+    
+
                 </div>
             </section>
 
@@ -91,8 +167,6 @@
     
       
     
-      
-        
       
     
     
