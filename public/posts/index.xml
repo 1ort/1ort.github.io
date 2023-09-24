@@ -6,14 +6,15 @@
     <description>Recent content in Posts on ort</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
-    <lastBuildDate>Sat, 12 Aug 2023 03:57:29 +0500</lastBuildDate><atom:link href="https://ort.soy/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 25 Sep 2023 00:32:39 +0500</lastBuildDate><atom:link href="https://ort.soy/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Helol?</title>
-      <link>https://ort.soy/posts/first/</link>
-      <pubDate>Sat, 12 Aug 2023 03:57:29 +0500</pubDate>
+      <title>Why you should use property factories in Python</title>
+      <link>https://ort.soy/posts/properties/</link>
+      <pubDate>Mon, 25 Sep 2023 00:32:39 +0500</pubDate>
       
-      <guid>https://ort.soy/posts/first/</guid>
-      <description>There will be something here soon </description>
+      <guid>https://ort.soy/posts/properties/</guid>
+      <description>If you often use the @property decorator in your classes, do you find yourself repeating the same logic over and over again?
+If this problem is familiar to you, use factories from functools import cache def frozen(value): def gty_get(instance): return value return property(gty_get) def default_from(factory): def qty_get(instance): return factory() return property(cache(qty_get)) def constraint(name, key_func): def qty_get(instance): return instance.__dict__[name] def qty_set(instance, value): if key_func(value): instance.__dict__[name] = value else: raise ValueError(&amp;#39;Value does not meet constraint&amp;#39;) return property(qty_get, qty_set) class Foo: a = frozen(5) b = default_from(list) c = constraint(&amp;#39;c&amp;#39;, lambda x: x % 2 == 0) Doctest &amp;gt;&amp;gt;&amp;gt; foo = Foo() &amp;gt;&amp;gt;&amp;gt; foo.</description>
     </item>
     
   </channel>
