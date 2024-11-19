@@ -8,5 +8,6 @@ draft: false
 - [Why you should use property factories in Python]({{< ref "/posts/properties" >}})
 
 ## Declarative finite state machines in python
+
 - [[en] Declarative finite state machines in Python]({{< ref "/posts/fsm_en" >}})
 - [[ru] Декларативные конечные автоматы на Python]({{< ref "/posts/fsm_rus" >}})

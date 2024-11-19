@@ -7,7 +7,7 @@ If you often use the @property decorator in your classes, do you find yourself r
 
 ### If this problem is familiar to you, use factories
 
-```
+```Python
 from functools import cache  
   
 def frozen(value):  
@@ -38,14 +38,14 @@ def constraint(name, key_func):
     return property(qty_get, qty_set)
 ```
 
-```
+```Python
 class Foo:  
     a = frozen(5)  
     b = default_from(list)  
     c = constraint('c', lambda x: x % 2 == 0)
 ```
 
-```
+```Python
 Doctest  
   
 >>> foo = Foo()  
