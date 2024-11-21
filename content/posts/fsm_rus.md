@@ -4,9 +4,9 @@ date: 2024-11-19T19:08:11+05:00
 draft: false
 ---
 <br>
-С конечными автоматами я впервые познакомился в времена своего увлечения геймдевом. В разрабоке игр все поголовно используют эту абстракцию. Однако это далеко не единственная их сфера применения.
+С конечными автоматами я впервые познакомился во времена своего увлечения геймдевом. В разработке игр все поголовно используют эту абстракцию. Однако, это далеко не единственная их сфера применения.
 
-Конечные автоматы повсюду вокруг нас, даже если мы их не замечаем или не знаем, что это такое. Тикет в jira, транзакция в базе данных, страница регистрации пользователя в соцсети. Всё перечисленное объединяет одно - состояние.
+Конечные автоматы повсюду вокруг нас, даже если мы их не замечаем, или не знаем, что это такое. Тикет в jira, транзакция в базе данных, страница регистрации пользователя в соцсети. Всё перечисленное объединяет одно - состояние.
 
 ## Что такое конечные автоматы?
 Не хочу углубляться в математические абстракции, поэтому буду краток.
@@ -16,28 +16,28 @@ draft: false
 - Нахождение только в одном из состояний в определённый момент времени.
 - Правила, описывающие возможные переходы между состояниями.
 
-#### Непонятно? 
+#### Непонятно?
 Вот пара примеров:
 
 #### Светофор:
-- Обладает конечным количеством состояний: "Красный", "Жёлтый", "Зелёный"
-- Имеет правила переходов между состояниями: 
+- Обладает конечным множеством состояний: "Красный", "Жёлтый", "Зелёный"
+- Имеет правила переходов между состояниями:
 	- красный -> жёлтый
 	- жёлтый -> зелёный
 	- зелёный -> красный
 ```
-┌───┐     
-│red│     
-└△─┬┘     
- │┌▽─────┐
- ││yellow│
- │└┬─────┘
-┌┴─▽──┐   
-│green│   
-└─────┘   
+.---.    
+|red|    
+'^-.'    
+ |.V----.
+ ||green|
+ |'.----'
+.'-V---. 
+|yellow| 
+'------' 
 ```
 #### Страница логина в систему:
--  Конечное число состояний: "Ввод логина", "Ввод пароля", "Доступ разрешен", "Доступ запрещен"
+-  Конечное множество состояний: "Ввод логина", "Ввод пароля", "Доступ разрешен", "Доступ запрещен"
 - Правила переходов:
 	- Ввод логина → Ввод пароля (логин введен)
 	- Ввод пароля → Доступ разрешен (пароль верный)
@@ -45,18 +45,18 @@ draft: false
 	- Доступ запрещен → Ввод логина (повторная попытка)
 
 ```
-┌─────┐           
-│login│           
-└△─┬──┘           
- │┌▽────────────┐ 
- ││  password   │ 
- │└┬───────────┬┘ 
-┌┴─▽──────────┐│  
-│access denied││  
-└─────────────┘│  
-┌──────────────▽─┐
-│ access granted │
-└────────────────┘
+.-----.           
+|login|           
+'^-.--'           
+ |.V------------. 
+ ||  password   | 
+ |'.-----------.' 
+.'-V----------.|  
+|access denied||  
+'-------------'|  
+.--------------V-.
+| access granted |
+'----------------'
 ```
 ## Выделяйте состояние явно, а не используйте косвенные признаки
 Нам, как программистам нужно уметь вовремя замечать этот паттерн в системе, над которой мы работаем и явно выделить состояние.
@@ -64,11 +64,14 @@ draft: false
 Взгляните на этот сниппет:
 ```python
 if (
-	support_ticket.last_message.from == 'support' 
+	support_ticket.last_message.from == 'support'
 	and (
 		datetime.now() - support_ticket.last_message.time
 	).hours > 1
-) or support_ticket.last_message.user_rating => 3:
+) or (
+	  support_ticket.answer_rating is not None
+	  and support_ticket.answer_rating >= 3
+  ):
     #do some logic with ticket
 ```
 Вы понимаете, что в нём происходит?
@@ -83,12 +86,12 @@ if support_ticket.status is SupportTicketStatus.Closed:
 
 Всё, что я сделал - это выделил явное состояние. Конечный автомат в системе от этого не появился, он существовал и до этого, просто теперь он явный.
 
-Преимущества такого подхода кажутся очевидными:
-1. Теперь у меня меньше кода и мне не нужно поддерживать все стречающиеся косвенные признаки состояний. Достаточно в одном месте описать условия перехода.
+Преимущества такого подхода очевидны:
+1. Теперь у меня меньше кода и мне не нужно поддерживать все встречающиеся косвенные признаки состояний. Достаточно в одном месте описать условия перехода.
 2. Глядя на объект, я сразу же могу сказать, в каком он состоянии. Мне не нужно держать в голове все косвенные признаки состояния.
 
 ## Реализация fsm на python
-Давайте напишем минимальный конечный автомат на python.
+Напишем минимальный конечный автомат на python.
 А чтобы было веселее, придумаем способ описать его декларативно.
 [Что такое "декларативно"?](https://en.wikipedia.org/wiki/Declarative_programming)
 Для примера возьмём задачу из таск-трекера.
@@ -105,14 +108,14 @@ class TaskStatus(Enum):
     FINISHED = auto()
 ```
 
-2. Я хочу иметь возможность возможность описать состояние любого обьекта и указать начальное состояние. 
-```python 
+2. Я хочу иметь описать состояние любого объекта и указать начальное состояние.
+```python
 class Task:
     status = State(TaskStatus, initial_state=TaskStatus.CREATED)
 ```
 
-3. При создании обьекта, его состояние должно соответствовать initial_state
-```python 
+3. При создании объекта, его состояние должно соответствовать initial_state
+```python
 task = Task()
 assert.task.status is TaskStatus.CREATED
 ```
@@ -142,59 +145,59 @@ class State:
 		if instance is None:  # При обращении из класса вернём сам дескриптор
 			return self
         return instance.__dict__.get(
-            self._attr_name, 
+            self._attr_name,
             self._initial_state # значение по умолчанию
         )
 ```
 ### 2. Перечислим переходы
-1. Раз мы решили идти по декларативному путу, опишем переходы в теле класса как аттрибуты:
-```python 
+1. Раз мы решили идти по декларативному пути, опишем переходы в теле класса как аттрибуты:
+```python
 class Task:
     status = State(TaskStatus, initial_state=TaskStatus.CREATED)
 
     enqueue = status.transition(
-	    source=TaskStatus.CREATED, 
+	    source=TaskStatus.CREATED,
 	    dest=TaskStatus.QUEUED,
 	)
     proceed = status.transition(
-	    source=TaskStatus.QUEUED, 
+	    source=TaskStatus.QUEUED,
 	    dest=TaskStatus.IN_PROGRESS,
 	)
     prioritize = status.transition(
-	    source=TaskStatus.CREATED, 
+	    source=TaskStatus.CREATED,
 	    dest=TaskStatus.IN_PROGRESS,
 	)
     cancel = status.transition(
 	    source=[
-		    TaskStatus.CREATED, 
+		    TaskStatus.CREATED,
 		    TaskStatus.QUEUED,
 		    TaskStatus.IN_PROGRESS
-		], 
+		],
 		dest=TaskStatus.CANCELLED,
 	)
     finish = status.transition(
-	    source=TaskStatus.IN_PROGRESS, 
+	    source=TaskStatus.IN_PROGRESS,
 	    dest=TaskStatus.FINISHED,
 	)
 ```
 Переход "cancel" возможен из разных статусов, поэтому в качестве source передадим список значений.
 Таким образом мы имеем вот такую схему переходов:
 ```
-┌───────┐       
-│created│       
-└┬─┬─┬──┘       
- │ │┌▽────────┐ 
- │ ││ queued  │ 
- │ │└┬───────┬┘ 
- │┌▽─▽──────┐│  
- ││cancelled││  
- │└△────────┘│  
-┌▽─┴─────────▽─┐
-│ in_progress  │
-└┬─────────────┘
-┌▽───────┐      
-│finished│      
-└────────┘      
+.-------.       
+|created|       
+'.-.-.--'       
+ | |.V--------. 
+ | || queued  | 
+ | |'.-------.' 
+ |.V-V------.|  
+ ||cancelled||  
+ |'^--------'|  
+.V-'---------V-.
+| in progress  |
+'.-------------'
+.V-------.      
+|finished|      
+'--------'      
 ```
 2. Я хочу чтобы нельзя было вручную переключить состояние. Только через указанные переходы:
 ```python
@@ -203,7 +206,7 @@ try:
 except AttributeError:
     ...
 ```
-3. Я хочу чтобы описанные переходы работалди как методы:
+3. Я хочу чтобы описанные переходы работали как методы:
 ```python
 task = Task()
 assert task.status is TaskStatus.CREATED
@@ -217,7 +220,7 @@ assert task.status is TaskStatus.IN_PROGRESS
 task.finish()
 assert task.status is TaskStatus.FINISHED
 ```
-4. State должен контроллировать, какой переход вызывается и не позволять нам перейти по некорректному маршруту.
+4. State должен контролировать, какой переход вызывается и не позволять нам перейти по некорректному маршруту.
 ```python
 task = Task()
 assert task.status is TaskStatus.CREATED
@@ -234,11 +237,11 @@ assert task.status is TaskStatus.CREATED
 
 class ImpossibleTransitionError(Exception):
     pass
-    
+
 class State:
     def __set__(self, instance: object, value: Any):
         """
-        Поднять исключение при попытке обновить стейт напрямую.
+        Поднять исключение при попытке обновить состояние напрямую.
         """
         raise AttributeError()
 
@@ -300,13 +303,13 @@ class State:
         if instance is None:  # При обращении из класса вернём сам дескриптор
             return self
         return instance.__dict__.get(
-            self._attr_name, 
+            self._attr_name,
             self._initial_state # значение по умолчанию
         )
 
     def __set__(self, instance: object, value: Any):
         """
-        Поднять исключение при попытке обновить стейт напрямую.
+        Поднять исключение при попытке обновить состояние напрямую.
         """
         raise AttributeError()
 
@@ -328,7 +331,7 @@ class State:
         def _update_state(instance):
             """
             Получает текущее состояние объекта и проверяет, возможен ли переход.
-            Либо поднимает исключение либо обновляет состояние
+            Либо поднимает исключение, либо обновляет состояние
             """
             state = self.__get__(instance, None)
             if state in source:
@@ -444,7 +447,7 @@ class TrafficLight:
     color = State(TrafficLightColor, initial_state=TrafficLightColor.RED)
     change_color = color.cycle(
         TrafficLightColor.RED,
-        TrafficLightColor.GREEN, 
+        TrafficLightColor.GREEN,
         TrafficLightColor.YELLOW
     )
 
@@ -465,7 +468,7 @@ class Task:
         source=TaskStatus.CREATED,
         dest=TaskStatus.QUEUED,
     )
-    
+
     proceed = status.transition(
         source=TaskStatus.QUEUED,
         dest=TaskStatus.IN_PROGRESS,
