@@ -24,15 +24,15 @@ There are couple examples:
 	- yellow -> green
 	- green -> red
 ```
-┌───┐     
-│red│     
-└△─┬┘     
- │┌▽─────┐
- ││yellow│
- │└┬─────┘
-┌┴─▽──┐   
-│green│   
-└─────┘   
+.---.    
+|red|    
+'^-.'    
+ |.V----.
+ ||green|
+ |'.----'
+.'-V---. 
+|yellow| 
+'------' 
 ```
 #### System login page:
 - A finite number of states: “Enter login”, ‘Enter password’, ‘Access granted’, ‘Access denied’.
@@ -43,18 +43,18 @@ There are couple examples:
 	- Access denied → Login entry (retry)
 
 ```
-┌─────┐           
-│login│           
-└△─┬──┘           
- │┌▽────────────┐ 
- ││  password   │ 
- │└┬───────────┬┘ 
-┌┴─▽──────────┐│  
-│access denied││  
-└─────────────┘│  
-┌──────────────▽─┐
-│ access granted │
-└────────────────┘
+.-----.           
+|login|           
+'^-.--'           
+ |.V------------. 
+ ||  password   | 
+ |'.-----------.' 
+.'-V----------.|  
+|access denied||  
+'-------------'|  
+.--------------V-.
+| access granted |
+'----------------'
 ```
 ## Explicitly emphasize the state rather than using indirect features
 We as programmers need to be able to spot this pattern in time in the system we are working on and explicitly highlight the state.
@@ -68,10 +68,11 @@ if (
 	).hours > 1
 ) or (
 	  support_ticket.answer_rating is not None 
-	  and support_ticket.answer_rating>= 3
+	  and support_ticket.answer_rating >= 3
   ):
     #do some logic with ticket
-``````
+```
+
 Do you understand what's going on in it?
 It takes me a cognitive effort to figure it out.
 But it's just a check that the support ticket is closed.
@@ -181,21 +182,21 @@ class Task:
 The “cancel” transition is possible from different statuses, so we pass a list of values as source.
 Thus we have this scheme of transitions:
 ```
-┌───────┐       
-│created│       
-└┬─┬─┬──┘       
- │ │┌▽────────┐ 
- │ ││ queued  │ 
- │ │└┬───────┬┘ 
- │┌▽─▽──────┐│  
- ││cancelled││  
- │└△────────┘│  
-┌▽─┴─────────▽─┐
-│ in_progress  │
-└┬─────────────┘
-┌▽───────┐      
-│finished│      
-└────────┘      
+.-------.       
+|created|       
+'.-.-.--'       
+ | |.V--------. 
+ | || queued  | 
+ | |'.-------.' 
+ |.V-V------.|  
+ ||cancelled||  
+ |'^--------'|  
+.V-'---------V-.
+| in progress  |
+'.-------------'
+.V-------.      
+|finished|      
+'--------'      
 ```
 2. I want it to be impossible to manually change state. Only through the specified transitions:
 ```python
