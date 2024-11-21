@@ -66,9 +66,12 @@ if (
 	and (
 		datetime.now() - support_ticket.last_message.time
 	).hours > 1
-) or support_ticket.last_message.user_rating => 3:
+) or (
+	  support_ticket.answer_rating is not None 
+	  and support_ticket.answer_rating>= 3
+  ):
     #do some logic with ticket
-```
+``````
 Do you understand what's going on in it?
 It takes me a cognitive effort to figure it out.
 But it's just a check that the support ticket is closed.
