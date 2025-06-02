@@ -34,11 +34,6 @@ title = "GitHub"
 url = "https://github.com/1ort"
 
 [[params.socialLinks]]
-icon = "fa-solid fa-envelope"
-title = "Email"
-url = "mailto:orthodox@nigge.rs"
-
-[[params.socialLinks]]
 icon = "fa-brands fa-telegram"
 title = "Telegram"
 url = "https://lochnesser.t.me"
